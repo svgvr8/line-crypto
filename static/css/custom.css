@@ -1,0 +1,27 @@
+/* Custom styles to complement Bootstrap theme */
+.card {
+    border-radius: 15px;
+    border: 1px solid var(--bs-border-color);
+}
+
+.list-group-item {
+    background-color: transparent;
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+.alert i {
+    margin-right: 8px;
+}
+
+/* Maintain dark theme consistency */
+[data-bs-theme=dark] .card {
+    background-color: var(--bs-dark);
+}
+
+[data-bs-theme=dark] .list-group-item {
+    color: var(--bs-light);
+    border-color: var(--bs-border-color);
+}
