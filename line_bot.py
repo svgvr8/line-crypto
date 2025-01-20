@@ -1,8 +1,6 @@
 """
-LINE Bot message handling and business logic module.
-Handles different types of messages and provides business profile responses.
+LINE Bot message handling for DOSI Wallet integration
 """
-
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
     TemplateSendMessage, ButtonsTemplate,
@@ -22,10 +20,7 @@ class LineMessageHandler:
         self.wallet_handler = WalletHandler()
 
     def handle_text_message(self, event):
-        """
-        Handle text messages and provide appropriate responses
-        based on keywords and business logic
-        """
+        """Handle text messages and provide appropriate responses"""
         message_text = event.message.text.lower()
         user_id = event.source.user_id
 
@@ -33,6 +28,12 @@ class LineMessageHandler:
             # Handle different message keywords
             if message_text in ['hi', 'hello', 'hey']:
                 return self._handle_greeting()
+            elif message_text == 'dosi':
+                return self._handle_dosi_menu()
+            elif message_text == 'connect dosi':
+                return self._handle_connect_dosi(user_id)
+            elif message_text == 'check balance':
+                return self._handle_dosi_balance(user_id)
             elif message_text == 'wallet':
                 return self._handle_wallet_menu()
             elif message_text == 'create wallet':
@@ -48,33 +49,129 @@ class LineMessageHandler:
             elif 'contact' in message_text:
                 return self._handle_contact_info()
             else:
-                return self._handle_default_response(message_text)
+                return self._handle_default_response()
 
         except Exception as e:
             logger.error(f"Error handling message: {str(e)}")
             return TextSendMessage(text="Sorry, I'm having trouble processing your request. Please try again later.")
 
     def _handle_greeting(self):
-        """Handle greeting messages"""
+        """Handle greeting messages with DOSI options"""
         return TemplateSendMessage(
-            alt_text="Welcome Menu",
+            alt_text="Welcome to DOSI Wallet",
             template=ButtonsTemplate(
-                title="Welcome to Wallet Bot!",
+                title="Welcome to DOSI Wallet!",
                 text="What would you like to do?",
                 thumbnail_image_url="https://img.icons8.com/color/96/000000/wallet.png",
                 actions=[
                     MessageAction(
-                        label="💰 Create Wallet",
-                        text="create wallet"
+                        label="🔗 Connect DOSI",
+                        text="connect dosi"
                     ),
                     MessageAction(
-                        label="👁️ Show Wallet",
-                        text="show wallet"
+                        label="💰 Check Balance",
+                        text="check balance"
+                    ),
+                    URIAction(
+                        label="📱 Open DOSI App",
+                        uri="https://citizen.dosi.world/login"
                     )
                 ]
             )
         )
 
+    def _handle_dosi_menu(self):
+        """Handle DOSI wallet menu display"""
+        return TemplateSendMessage(
+            alt_text="DOSI Menu",
+            template=ButtonsTemplate(
+                title="DOSI Wallet Options",
+                text="Choose an option:",
+                thumbnail_image_url="https://img.icons8.com/color/96/000000/wallet.png",
+                actions=[
+                    MessageAction(
+                        label="🔗 Connect Wallet",
+                        text="connect dosi"
+                    ),
+                    MessageAction(
+                        label="💰 Check Balance",
+                        text="check balance"
+                    ),
+                    URIAction(
+                        label="📱 DOSI World",
+                        uri="https://citizen.dosi.world"
+                    )
+                ]
+            )
+        )
+
+    def _handle_connect_dosi(self, user_id):
+        """Handle DOSI wallet connection"""
+        wallet_info = self.wallet_handler.get_dosi_wallet(user_id)
+        return TemplateSendMessage(
+            alt_text="Connect DOSI Wallet",
+            template=ButtonsTemplate(
+                title="Connect DOSI Wallet",
+                text="Connect your DOSI wallet to access your balance and assets",
+                actions=[
+                    URIAction(
+                        label="🔗 Connect Now",
+                        uri=wallet_info["connect_url"]
+                    ),
+                    MessageAction(
+                        label="⬅️ Back to Menu",
+                        text="dosi"
+                    )
+                ]
+            )
+        )
+
+    def _handle_dosi_balance(self, user_id):
+        """Handle DOSI balance check"""
+        balance_info = self.wallet_handler.get_dosi_balance(user_id)
+        if balance_info["status"] == "success":
+            return TextSendMessage(
+                text=f"💰 DOSI Balance:\n{balance_info['balance']}\n\n"
+                     f"To view your complete balance and assets, please use the DOSI app."
+            )
+        else:
+            return TemplateSendMessage(
+                alt_text="DOSI Balance Error",
+                template=ButtonsTemplate(
+                    title="Connect DOSI First",
+                    text="Please connect your DOSI wallet to check your balance",
+                    actions=[
+                        MessageAction(
+                            label="🔗 Connect DOSI",
+                            text="connect dosi"
+                        )
+                    ]
+                )
+            )
+
+    def _handle_default_response(self):
+        """Handle default response"""
+        return TemplateSendMessage(
+            alt_text="DOSI Options",
+            template=ButtonsTemplate(
+                title="DOSI Wallet",
+                text="Here's what I can help you with:",
+                actions=[
+                    MessageAction(
+                        label="💰 DOSI Menu",
+                        text="dosi"
+                    ),
+                    MessageAction(
+                        label="🔗 Connect Wallet",
+                        text="connect dosi"
+                    ),
+                    MessageAction(
+                        label="💳 Check Balance",
+                        text="check balance"
+                    )
+                ]
+            )
+        )
     def _handle_wallet_menu(self):
         """Handle wallet menu display"""
         return TemplateSendMessage(
@@ -198,28 +295,4 @@ class LineMessageHandler:
                  "📞 Phone: (555) 123-4567\n"
                  "📧 Email: contact@business.com\n"
                  "💬 LINE: @business_account"
-        )
-
-    def _handle_default_response(self, message_text):
-        """Handle default response for unrecognized messages"""
-        return TemplateSendMessage(
-            alt_text="Menu Options",
-            template=ButtonsTemplate(
-                title="Available Options",
-                text="Here's what I can help you with:",
-                actions=[
-                    MessageAction(
-                        label="Wallet Options",
-                        text="wallet"
-                    ),
-                    MessageAction(
-                        label="Business Hours",
-                        text="hours"
-                    ),
-                    MessageAction(
-                        label="Location",
-                        text="location"
-                    )
-                ]
-            )
         )
