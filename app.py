@@ -15,6 +15,11 @@ app = Flask(__name__)
 app.secret_key = Config.SESSION_SECRET
 
 # LINE Bot configuration
+if not Config.LINE_CHANNEL_ACCESS_TOKEN:
+    logger.error("LINE_CHANNEL_ACCESS_TOKEN is not set")
+    raise ValueError("LINE_CHANNEL_ACCESS_TOKEN is required")
+
+logger.debug(f"Initializing LINE Bot API with token length: {len(Config.LINE_CHANNEL_ACCESS_TOKEN)}")
 line_bot_api = LineBotApi(Config.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(Config.LINE_CHANNEL_SECRET)
 message_handler = LineMessageHandler(line_bot_api)
@@ -30,6 +35,7 @@ def callback():
     signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
     logger.debug(f"Request body: {body}")
+    logger.debug(f"Signature: {signature}")
 
     try:
         handler.handle(body, signature)
@@ -46,6 +52,7 @@ def callback():
 def handle_message(event):
     """Handle incoming messages using LineMessageHandler"""
     try:
+        logger.debug(f"Received message: {event.message.text}")
         # Use the message handler to process the message
         response = message_handler.handle_text_message(event)
         if response:

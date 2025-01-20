@@ -59,20 +59,17 @@ class LineMessageHandler:
         return TemplateSendMessage(
             alt_text="Welcome Menu",
             template=ButtonsTemplate(
-                title="Welcome!",
+                title="Welcome to Wallet Bot!",
                 text="What would you like to do?",
+                thumbnail_image_url="https://img.icons8.com/color/96/000000/wallet.png",
                 actions=[
                     MessageAction(
-                        label="Create Wallet",
+                        label="💰 Create Wallet",
                         text="create wallet"
                     ),
                     MessageAction(
-                        label="Show Wallet",
+                        label="👁️ Show Wallet",
                         text="show wallet"
-                    ),
-                    MessageAction(
-                        label="Business Hours",
-                        text="hours"
                     )
                 ]
             )
@@ -84,14 +81,15 @@ class LineMessageHandler:
             alt_text="Wallet Menu",
             template=ButtonsTemplate(
                 title="Wallet Options",
-                text="What would you like to do with your wallet?",
+                text="Choose an option:",
+                thumbnail_image_url="https://img.icons8.com/color/96/000000/wallet.png",
                 actions=[
                     MessageAction(
-                        label="Create New Wallet",
+                        label="💰 Create New Wallet",
                         text="create wallet"
                     ),
                     MessageAction(
-                        label="Show My Wallet",
+                        label="👁️ Show My Wallet",
                         text="show wallet"
                     )
                 ]
