@@ -5,7 +5,6 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
     TemplateSendMessage, ButtonsTemplate,
     PostbackAction, URIAction,
-    CarouselTemplate, CarouselColumn,
     MessageAction
 )
 import logging
@@ -25,6 +24,7 @@ class LineMessageHandler:
         user_id = event.source.user_id
 
         try:
+            logger.debug(f"Processing message: {message_text}")
             # Handle different message keywords
             if message_text in ['hi', 'hello', 'hey']:
                 return self._handle_greeting()
@@ -34,20 +34,6 @@ class LineMessageHandler:
                 return self._handle_connect_dosi(user_id)
             elif message_text == 'check balance':
                 return self._handle_dosi_balance(user_id)
-            elif message_text == 'wallet':
-                return self._handle_wallet_menu()
-            elif message_text == 'create wallet':
-                return self._handle_create_wallet(user_id)
-            elif message_text == 'show wallet':
-                return self._handle_show_wallet(user_id)
-            elif 'hours' in message_text or 'opening' in message_text:
-                return self._handle_business_hours()
-            elif 'location' in message_text or 'address' in message_text:
-                return self._handle_location()
-            elif 'menu' in message_text or 'services' in message_text:
-                return self._handle_services_menu()
-            elif 'contact' in message_text:
-                return self._handle_contact_info()
             else:
                 return self._handle_default_response()
 
@@ -62,7 +48,6 @@ class LineMessageHandler:
             template=ButtonsTemplate(
                 title="Welcome to DOSI Wallet!",
                 text="What would you like to do?",
-                thumbnail_image_url="https://img.icons8.com/color/96/000000/wallet.png",
                 actions=[
                     MessageAction(
                         label="🔗 Connect DOSI",
@@ -72,9 +57,9 @@ class LineMessageHandler:
                         label="💰 Check Balance",
                         text="check balance"
                     ),
-                    URIAction(
-                        label="📱 Open DOSI App",
-                        uri="https://citizen.dosi.world/login"
+                    MessageAction(
+                        label="📱 DOSI Menu",
+                        text="dosi"
                     )
                 ]
             )
@@ -87,7 +72,6 @@ class LineMessageHandler:
             template=ButtonsTemplate(
                 title="DOSI Wallet Options",
                 text="Choose an option:",
-                thumbnail_image_url="https://img.icons8.com/color/96/000000/wallet.png",
                 actions=[
                     MessageAction(
                         label="🔗 Connect Wallet",
@@ -116,7 +100,7 @@ class LineMessageHandler:
                 actions=[
                     URIAction(
                         label="🔗 Connect Now",
-                        uri=wallet_info["connect_url"]
+                        uri="https://citizen.dosi.world/login"
                     ),
                     MessageAction(
                         label="⬅️ Back to Menu",
@@ -172,6 +156,7 @@ class LineMessageHandler:
                 ]
             )
         )
+
     def _handle_wallet_menu(self):
         """Handle wallet menu display"""
         return TemplateSendMessage(
@@ -232,67 +217,3 @@ class LineMessageHandler:
                     ]
                 )
             )
-
-    def _handle_business_hours(self):
-        """Handle business hours inquiries"""
-        return TextSendMessage(
-            text="Our business hours are:\n"
-                 "Monday-Friday: 9:00 AM - 6:00 PM\n"
-                 "Saturday: 10:00 AM - 4:00 PM\n"
-                 "Sunday: Closed"
-        )
-
-    def _handle_location(self):
-        """Handle location inquiries"""
-        return TemplateSendMessage(
-            alt_text="Business Location",
-            template=ButtonsTemplate(
-                title="Our Location",
-                text="We are located at:\n123 Business Street\nCity, State 12345",
-                actions=[
-                    URIAction(
-                        label="Open in Maps",
-                        uri="https://www.google.com/maps"
-                    )
-                ]
-            )
-        )
-
-    def _handle_services_menu(self):
-        """Handle services menu display"""
-        return TemplateSendMessage(
-            alt_text="Our Services",
-            template=CarouselTemplate(
-                columns=[
-                    CarouselColumn(
-                        title="Service Category 1",
-                        text="Professional consulting services",
-                        actions=[
-                            PostbackAction(
-                                label="Learn More",
-                                data="service_1"
-                            )
-                        ]
-                    ),
-                    CarouselColumn(
-                        title="Service Category 2",
-                        text="Business solutions",
-                        actions=[
-                            PostbackAction(
-                                label="Learn More",
-                                data="service_2"
-                            )
-                        ]
-                    )
-                ]
-            )
-        )
-
-    def _handle_contact_info(self):
-        """Handle contact information requests"""
-        return TextSendMessage(
-            text="Contact us at:\n"
-                 "📞 Phone: (555) 123-4567\n"
-                 "📧 Email: contact@business.com\n"
-                 "💬 LINE: @business_account"
-        )
