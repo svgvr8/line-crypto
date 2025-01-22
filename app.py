@@ -65,3 +65,5 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text="Sorry, I'm having trouble processing your request. Please try again later.")
         )
+
+    return 'OK'
