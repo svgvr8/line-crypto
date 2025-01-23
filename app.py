@@ -70,7 +70,7 @@ def handle_message(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 response,
-                notification_disabled=True  # This helps prevent additional notifications
+                notification_disabled=False  # Enable notifications for our responses
             )
             logger.debug(f"Sent response for message: {event.message.text}")
             return Response('OK', mimetype='text/plain', status=200)
@@ -80,7 +80,7 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text="Sorry, I'm having trouble processing your request. Please try again later."),
-            notification_disabled=True
+            notification_disabled=False
         )
     return Response('OK', mimetype='text/plain', status=200)
 
