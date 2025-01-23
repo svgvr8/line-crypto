@@ -73,7 +73,7 @@ def handle_message(event):
                 notification_disabled=True  # This helps prevent additional notifications
             )
             logger.debug(f"Sent response for message: {event.message.text}")
-            return 'OK'
+            return Response('OK', mimetype='text/plain', status=200)
     except Exception as e:
         logger.error(f"Error handling message: {str(e)}")
         # Send a default error message to the user
@@ -82,7 +82,7 @@ def handle_message(event):
             TextSendMessage(text="Sorry, I'm having trouble processing your request. Please try again later."),
             notification_disabled=True
         )
-    return 'OK'
+    return Response('OK', mimetype='text/plain', status=200)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
