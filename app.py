@@ -32,7 +32,10 @@ def index():
 @app.route("/callback", methods=['POST'])
 def callback():
     """Handle LINE webhook callback"""
+    # Get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
+
+    # Get request body as text
     body = request.get_data(as_text=True)
     logger.debug(f"Request body: {body}")
     logger.debug(f"Signature: {signature}")
@@ -56,14 +59,23 @@ def handle_message(event):
         # Use the message handler to process the message
         response = message_handler.handle_text_message(event)
         if response:
-            line_bot_api.reply_message(event.reply_token, response)
+            # Reply with our custom message and prevent default response
+            line_bot_api.reply_message(
+                event.reply_token,
+                response,
+                notification_disabled=True  # This helps prevent additional notifications
+            )
             logger.debug(f"Sent response for message: {event.message.text}")
     except Exception as e:
         logger.error(f"Error handling message: {str(e)}")
         # Send a default error message to the user
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="Sorry, I'm having trouble processing your request. Please try again later.")
+            TextSendMessage(text="Sorry, I'm having trouble processing your request. Please try again later."),
+            notification_disabled=True
         )
 
     return 'OK'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
