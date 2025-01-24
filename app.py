@@ -6,6 +6,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 import logging
 from config import Config
 from line_bot import LineMessageHandler
+from wallet_handler import WalletHandler
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -27,11 +28,22 @@ logger.debug(f"Initializing LINE Bot API with token length: {len(Config.LINE_CHA
 line_bot_api = LineBotApi(Config.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(Config.LINE_CHANNEL_SECRET)
 message_handler = LineMessageHandler(line_bot_api)
+wallet_handler = WalletHandler()
 
 @app.route("/")
 def index():
     """Render status page"""
     return render_template('index.html', basic_id=Config.BASIC_ID)
+
+@app.route("/trading/<user_id>")
+def trading(user_id):
+    """Render trading interface"""
+    wallet_info = wallet_handler.get_wallet(user_id)
+    if wallet_info and wallet_info["status"] == "success":
+        return render_template('trading.html', 
+                             address=wallet_info["address"],
+                             balance="0.00")  # In production, fetch real balance
+    return "Wallet not found", 404
 
 @app.route("/callback", methods=['POST'])
 def callback():

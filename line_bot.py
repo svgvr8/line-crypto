@@ -4,7 +4,7 @@ LINE Bot message handling for Wallet functionality
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
     TemplateSendMessage, ButtonsTemplate,
-    MessageAction
+    MessageAction, URIAction
 )
 import logging
 from wallet_handler import WalletHandler
@@ -63,11 +63,22 @@ class LineMessageHandler:
         try:
             wallet_info = self.wallet_handler.create_wallet(user_id)
             if wallet_info["status"] == "success":
-                return TextSendMessage(
-                    text=f"✅ Wallet created successfully!\n\n"
-                         f"📝 Address: {wallet_info['address']}\n\n"
-                         f"🔐 Private Key: {wallet_info['private_key']}\n\n"
-                         f"⚠️ IMPORTANT: Save your private key securely and never share it!"
+                return TemplateSendMessage(
+                    alt_text="Wallet Created",
+                    template=ButtonsTemplate(
+                        title="✅ Wallet Created!",
+                        text=f"Address: {wallet_info['address'][:10]}...{wallet_info['address'][-8:]}",
+                        actions=[
+                            URIAction(
+                                label="🚀 Open Trading Interface",
+                                uri=f"https://your-domain.repl.co/trading/{user_id}"
+                            ),
+                            MessageAction(
+                                label="📝 Show Details",
+                                text="show wallet"
+                            )
+                        ]
+                    )
                 )
             else:
                 return TextSendMessage(text=wallet_info["message"])
@@ -82,10 +93,22 @@ class LineMessageHandler:
         try:
             wallet_info = self.wallet_handler.get_wallet(user_id)
             if wallet_info and wallet_info["status"] == "success":
-                return TextSendMessage(
-                    text=f"💳 Your Wallet Information:\n\n"
-                         f"📝 Address: {wallet_info['address']}\n\n"
-                         f"⚠️ Never share your private key with anyone!"
+                return TemplateSendMessage(
+                    alt_text="Wallet Information",
+                    template=ButtonsTemplate(
+                        title="💳 Your Wallet",
+                        text=f"Address: {wallet_info['address'][:10]}...{wallet_info['address'][-8:]}",
+                        actions=[
+                            URIAction(
+                                label="🚀 Open Trading Interface",
+                                uri=f"https://your-domain.repl.co/trading/{user_id}"
+                            ),
+                            MessageAction(
+                                label="🔄 Refresh",
+                                text="show wallet"
+                            )
+                        ]
+                    )
                 )
             else:
                 return TemplateSendMessage(

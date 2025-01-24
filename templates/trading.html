@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .address-box {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .balance {
+            font-size: 0.9em;
+            color: #aaa;
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .action-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+        .sell-button {
+            background-color: #f44336;
+        }
+        .neutral-button {
+            background-color: #424242;
+        }
+        .bottom-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+        }
+        .bottom-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="address-box">
+        <div>Your SOL Address:</div>
+        <div style="word-break: break-all;">{{ address }}</div>
+        <div class="balance">Sol Balance: {{ balance }}</div>
+    </div>
+
+    <div class="button-grid">
+        <a href="#" class="action-button">Buy</a>
+        <a href="#" class="action-button sell-button">Sell</a>
+        <a href="#" class="action-button neutral-button">Limit Orders</a>
+        <a href="#" class="action-button neutral-button">DCA</a>
+        <a href="#" class="action-button neutral-button">Withdraw Funds</a>
+        <a href="#" class="action-button neutral-button">Settings</a>
+    </div>
+
+    <div class="bottom-buttons">
+        <a href="#" class="bottom-button">📊 Positions</a>
+        <a href="#" class="bottom-button">🔗 Referrals</a>
+        <a href="#" class="bottom-button">🔄 Refresh</a>
+        <a href="#" class="bottom-button">⚙️ Settings</a>
+        <a href="#" class="bottom-button">❓ Help</a>
+    </div>
+</body>
+</html>
