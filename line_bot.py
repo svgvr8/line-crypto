@@ -8,6 +8,7 @@ from linebot.models import (
 )
 import logging
 from wallet_handler import WalletHandler
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ class LineMessageHandler:
         """Initialize the message handler with LINE Bot API instance"""
         self.line_bot_api = line_bot_api
         self.wallet_handler = WalletHandler()
+        self.base_url = f"https://{os.environ.get('REPL_SLUG')}.{os.environ.get('REPL_OWNER')}.repl.co"
 
     def handle_text_message(self, event):
         """Handle text messages and provide appropriate responses"""
@@ -41,17 +43,17 @@ class LineMessageHandler:
     def _handle_greeting(self):
         """Handle greeting messages with wallet options"""
         return TemplateSendMessage(
-            alt_text="Welcome to Wallet Manager",
+            alt_text="Wallet Options",
             template=ButtonsTemplate(
-                title="Welcome to Wallet Manager!",
+                title="Welcome!",
                 text="What would you like to do?",
                 actions=[
                     MessageAction(
-                        label="💰 Create Wallet",
+                        label="Create Wallet",
                         text="create wallet"
                     ),
                     MessageAction(
-                        label="👁️ Show Wallet",
+                        label="Show Wallet",
                         text="show wallet"
                     )
                 ]
@@ -66,15 +68,15 @@ class LineMessageHandler:
                 return TemplateSendMessage(
                     alt_text="Wallet Created",
                     template=ButtonsTemplate(
-                        title="✅ Wallet Created!",
-                        text=f"Address: {wallet_info['address'][:10]}...{wallet_info['address'][-8:]}",
+                        title="Wallet Created!",
+                        text=f"Address: {wallet_info['address'][:10]}...",
                         actions=[
                             URIAction(
-                                label="🚀 Open Trading Interface",
-                                uri=f"https://your-domain.repl.co/trading/{user_id}"
+                                label="Trade Now",
+                                uri=f"{self.base_url}/trading/{user_id}"
                             ),
                             MessageAction(
-                                label="📝 Show Details",
+                                label="Show Details",
                                 text="show wallet"
                             )
                         ]
@@ -94,17 +96,17 @@ class LineMessageHandler:
             wallet_info = self.wallet_handler.get_wallet(user_id)
             if wallet_info and wallet_info["status"] == "success":
                 return TemplateSendMessage(
-                    alt_text="Wallet Information",
+                    alt_text="Wallet Info",
                     template=ButtonsTemplate(
-                        title="💳 Your Wallet",
-                        text=f"Address: {wallet_info['address'][:10]}...{wallet_info['address'][-8:]}",
+                        title="Your Wallet",
+                        text=f"Address: {wallet_info['address'][:10]}...",
                         actions=[
                             URIAction(
-                                label="🚀 Open Trading Interface",
-                                uri=f"https://your-domain.repl.co/trading/{user_id}"
+                                label="Trade Now",
+                                uri=f"{self.base_url}/trading/{user_id}"
                             ),
                             MessageAction(
-                                label="🔄 Refresh",
+                                label="Refresh",
                                 text="show wallet"
                             )
                         ]
@@ -112,13 +114,13 @@ class LineMessageHandler:
                 )
             else:
                 return TemplateSendMessage(
-                    alt_text="No Wallet Found",
+                    alt_text="No Wallet",
                     template=ButtonsTemplate(
                         title="No Wallet Found",
-                        text="You don't have a wallet yet. Would you like to create one?",
+                        text="Create a wallet?",
                         actions=[
                             MessageAction(
-                                label="💰 Create Wallet",
+                                label="Create Wallet",
                                 text="create wallet"
                             )
                         ]
@@ -133,17 +135,17 @@ class LineMessageHandler:
     def _handle_default_response(self):
         """Handle default response"""
         return TemplateSendMessage(
-            alt_text="Wallet Options",
+            alt_text="Options",
             template=ButtonsTemplate(
                 title="Wallet Manager",
-                text="Here's what I can help you with:",
+                text="Choose an option:",
                 actions=[
                     MessageAction(
-                        label="💰 Create Wallet",
+                        label="Create Wallet",
                         text="create wallet"
                     ),
                     MessageAction(
-                        label="👁️ Show Wallet",
+                        label="Show Wallet",
                         text="show wallet"
                     )
                 ]

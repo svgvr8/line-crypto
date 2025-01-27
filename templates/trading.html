@@ -7,20 +7,37 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: white;
+            background-color: #f0f6f0;
+            color: #333;
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .address-box {
-            background-color: #2a2a2a;
+            background-color: white;
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .balance {
+        .sol-address {
+            font-weight: bold;
+            word-break: break-all;
+            margin: 10px 0;
+            color: #666;
+        }
+        .sol-balance {
+            color: #666;
             font-size: 0.9em;
-            color: #aaa;
+        }
+        .referral-link {
+            color: #4a90e2;
+            text-decoration: none;
+            display: block;
+            margin: 10px 0;
+            font-size: 0.9em;
         }
         .button-grid {
             display: grid;
@@ -36,7 +53,6 @@
             border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
-            width: 100%;
             text-align: center;
             text-decoration: none;
         }
@@ -44,52 +60,68 @@
             background-color: #f44336;
         }
         .neutral-button {
-            background-color: #424242;
+            background-color: #888;
         }
-        .bottom-buttons {
+        .bottom-nav {
+            background-color: #f5f5f5;
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            gap: 5px;
+            padding: 10px;
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
         }
-        .bottom-button {
-            background-color: #333;
-            color: white;
+        .nav-button {
+            background: none;
             border: none;
             padding: 10px;
-            border-radius: 8px;
             font-size: 14px;
-            cursor: pointer;
+            color: #666;
             text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-decoration: none;
+        }
+        .welcome-text {
+            margin: 20px 0;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
     <div class="address-box">
         <div>Your SOL Address:</div>
-        <div style="word-break: break-all;">{{ address }}</div>
-        <div class="balance">Sol Balance: {{ balance }}</div>
+        <div class="sol-address">{{ address }}</div>
+        <div class="sol-balance">Sol Balance: {{ balance }}</div>
+        <a href="#" class="referral-link">📎 Referral link</a>
+    </div>
+
+    <div class="welcome-text">
+        Welcome To Atlas! 🚀<br>
+        Atlas is a Trading Bot, part of the Paragon Ecosystem.<br>
+        Community Driven and designed to simplify trading.
     </div>
 
     <div class="button-grid">
         <a href="#" class="action-button">Buy</a>
         <a href="#" class="action-button sell-button">Sell</a>
-        <a href="#" class="action-button neutral-button">Limit Orders</a>
-        <a href="#" class="action-button neutral-button">DCA</a>
-        <a href="#" class="action-button neutral-button">Withdraw Funds</a>
-        <a href="#" class="action-button neutral-button">Settings</a>
+        <a href="#" class="action-button neutral-button">⭕ Limit Orders</a>
+        <a href="#" class="action-button neutral-button">📊 DCA</a>
+        <a href="#" class="action-button neutral-button">💰 Withdraw Funds</a>
+        <a href="#" class="action-button neutral-button">⚙️ Settings</a>
     </div>
 
-    <div class="bottom-buttons">
-        <a href="#" class="bottom-button">📊 Positions</a>
-        <a href="#" class="bottom-button">🔗 Referrals</a>
-        <a href="#" class="bottom-button">🔄 Refresh</a>
-        <a href="#" class="bottom-button">⚙️ Settings</a>
-        <a href="#" class="bottom-button">❓ Help</a>
+    <div class="bottom-nav">
+        <a href="#" class="nav-button">📊 Positions</a>
+        <a href="#" class="nav-button">🔗 Referrals</a>
+        <a href="#" class="nav-button">🔄 Refresh</a>
+        <a href="#" class="nav-button">⚙️ Settings</a>
+        <a href="#" class="nav-button">❓ Help</a>
     </div>
 </body>
 </html>
