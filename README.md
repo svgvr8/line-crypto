@@ -82,18 +82,3 @@ The application runs in debug mode by default. For production deployment, modify
 ```python
 app.run(host="0.0.0.0", port=5000, debug=False)
 ```
-
-## Security Notes
-
-- Current wallet storage is in-memory and for demonstration purposes only
-- For production, implement secure database storage
-- Never expose private keys in production environment
-- Use HTTPS in production
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
